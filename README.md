@@ -109,6 +109,42 @@ A comprehensive, interactive analytics dashboard for exploring Netflix viewing h
 5. **Open your browser**:
    - Navigate to the URL shown in the terminal (usually `http://localhost:5173`)
 
+## 🚀 Deployment
+
+### Netlify Deployment
+
+The project is configured for easy deployment on Netlify:
+
+1. **Automatic Configuration**:
+   - `netlify.toml` is configured with:
+     - Build command: `npm run build`
+     - Publish directory: `dist`
+     - Node version: 18
+
+2. **Manual Deployment Steps**:
+   ```bash
+   # Build the project locally first to verify
+   npm run build
+   
+   # The dist folder will be created with production files
+   ```
+
+3. **Netlify Settings** (if not using netlify.toml):
+   - **Build command**: `npm run build`
+   - **Publish directory**: `dist`
+   - **Node version**: 18 (or use `.nvmrc` file)
+
+4. **Environment Variables**:
+   - No environment variables required for basic deployment
+   - All data is loaded from `public/data/NetflixViewingHistory.csv`
+
+5. **Troubleshooting Netlify Builds**:
+   - Ensure `package.json` has the `build` script
+   - Verify all dependencies are in `package.json` (not just devDependencies)
+   - Check that `package-lock.json` is committed
+   - Ensure Node version matches (18+)
+   - Verify `netlify.toml` exists in the root directory
+
 ## 🚀 Usage
 
 ### Basic Operations
