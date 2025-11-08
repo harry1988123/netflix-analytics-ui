@@ -5,5 +5,14 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     include: ['react-window']
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
   }
 })
