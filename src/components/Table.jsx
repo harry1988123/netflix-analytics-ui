@@ -32,6 +32,7 @@ export default function Table({ rows = [], isLoading = false }) {
       <div className="bg-muted border-b border-border sticky top-0 z-10">
         <div className="flex">
           <div className="text-left px-4 py-3 font-semibold flex-shrink-0 w-32 text-foreground">Date</div>
+          <div className="text-left px-4 py-3 font-semibold flex-shrink-0 w-24 text-foreground">Profile</div>
           <div className="text-left px-4 py-3 font-semibold flex-1 text-foreground">Title</div>
         </div>
       </div>
@@ -74,6 +75,11 @@ export default function Table({ rows = [], isLoading = false }) {
                   >
                     <div className="px-4 py-2 whitespace-nowrap flex-shrink-0 w-32 font-medium">
                       {row.Date || ''}
+                    </div>
+                    <div className="px-4 py-2 whitespace-nowrap flex-shrink-0 w-24">
+                      <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-semibold text-sm">
+                        {row.Profile || ''}
+                      </span>
                     </div>
                     <div className="px-4 py-2 flex-1">{row.Title || ''}</div>
                   </div>
