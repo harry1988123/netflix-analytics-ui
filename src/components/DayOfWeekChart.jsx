@@ -1,6 +1,7 @@
 import React from 'react'
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import Shimmer from './Shimmer.jsx'
+import { Card, CardContent } from './ui/card.jsx'
 
 const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const COLORS = ['#EF4444', '#F59E0B', '#10B981', '#06B6D4', '#6366F1', '#8B5CF6', '#EC4899']
@@ -30,15 +31,18 @@ export default function DayOfWeekChart({ data, title = 'Viewing by Day of Week',
 
   if (isLoading) {
     return (
-      <div className="card p-4">
-        <Shimmer height="h-80" />
-      </div>
+      <Card>
+        <CardContent className="p-4">
+          <Shimmer height="h-80" />
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <div className="card p-4">
-      <h2 className="text-lg font-semibold mb-4">{title}</h2>
+    <Card>
+      <CardContent className="p-4">
+        <h2 className="text-lg font-semibold mb-4">{title}</h2>
       {data.length === 0 ? (
         <div className="h-64 flex items-center justify-center text-slate-500">
           No data to display
@@ -63,7 +67,8 @@ export default function DayOfWeekChart({ data, title = 'Viewing by Day of Week',
           </ResponsiveContainer>
         </div>
       )}
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 

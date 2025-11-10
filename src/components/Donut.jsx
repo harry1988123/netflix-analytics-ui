@@ -1,6 +1,8 @@
 import React from 'react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import { DonutShimmer } from './Shimmer.jsx'
+import { Card, CardContent } from './ui/card.jsx'
+import { Button } from './ui/button.jsx'
 
 // Extended color palette for more items
 const BASE_COLORS = [
@@ -24,22 +26,26 @@ const generateColors = (count) => {
 export default function Donut({ data, activeKey, onSliceClick, title = 'Top Titles', isLoading = false }) {
   if (isLoading) {
     return (
-      <div className="card p-4">
-        <DonutShimmer />
-      </div>
+      <Card>
+        <CardContent className="p-4">
+          <DonutShimmer />
+        </CardContent>
+      </Card>
     )
   }
 
   if (!data || data.length === 0) {
     return (
-      <div className="card p-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold">{title}</h2>
-        </div>
-        <div className="h-[600px] min-h-[600px] flex items-center justify-center text-slate-500">
-          No data to display
-        </div>
-      </div>
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold">{title}</h2>
+          </div>
+          <div className="h-[600px] min-h-[600px] flex items-center justify-center text-slate-500">
+            No data to display
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
@@ -69,11 +75,21 @@ export default function Donut({ data, activeKey, onSliceClick, title = 'Top Titl
   }
 
   return (
-    <div className="card p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">{title}</h2>
-        {activeKey && <button className="text-sm underline text-slate-600 hover:text-slate-900" onClick={() => onSliceClick(null)}>Clear</button>}
-      </div>
+    <Card>
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold">{title}</h2>
+          {activeKey && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onSliceClick(null)}
+              className="text-sm"
+            >
+              Clear
+            </Button>
+          )}
+        </div>
       <div className="h-[600px] min-h-[600px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -115,6 +131,7 @@ export default function Donut({ data, activeKey, onSliceClick, title = 'Top Titl
           </PieChart>
         </ResponsiveContainer>
       </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }

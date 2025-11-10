@@ -1,6 +1,7 @@
 import React from 'react'
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import Shimmer from './Shimmer.jsx'
+import { Card, CardContent } from './ui/card.jsx'
 
 const COLORS = ['#6366F1', '#06B6D4', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#14B8A6', '#F43F5E', '#EC4899', '#3B82F6']
 
@@ -31,15 +32,18 @@ export default function BarChart({ data, title = 'Top Titles', isLoading = false
 
     if (isLoading) {
         return (
-            <div className="card p-4">
-                <Shimmer height="h-80" />
-            </div>
+            <Card>
+                <CardContent className="p-4">
+                    <Shimmer height="h-80" />
+                </CardContent>
+            </Card>
         )
     }
 
     return (
-        <div className="card p-4">
-            <h2 className="text-lg font-semibold mb-4">{title}</h2>
+        <Card>
+            <CardContent className="p-4">
+                <h2 className="text-lg font-semibold mb-4">{title}</h2>
             {data.length === 0 ? (
                 <div className="h-64 flex items-center justify-center text-slate-500">
                     No data to display
@@ -72,7 +76,8 @@ export default function BarChart({ data, title = 'Top Titles', isLoading = false
                     </ResponsiveContainer>
                 </div>
             )}
-        </div>
+            </CardContent>
+        </Card>
     )
 }
 

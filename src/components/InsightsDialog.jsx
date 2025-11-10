@@ -4,6 +4,7 @@ import YearlyChart from './YearlyChart.jsx'
 import MonthlyPatternChart from './MonthlyPatternChart.jsx'
 import BarChart from './BarChart.jsx'
 import DayOfWeekChart from './DayOfWeekChart.jsx'
+import { Card, CardContent } from './ui/card.jsx'
 
 export default function InsightsDialog({ isOpen, onClose, insights }) {
   if (!insights) {
@@ -34,74 +35,87 @@ export default function InsightsDialog({ isOpen, onClose, insights }) {
       <div className="space-y-6">
         {/* Summary Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="card p-4">
-            <div className="text-sm text-muted-foreground mb-1">Total Items Watched</div>
-            <div className="text-3xl font-bold text-foreground">{totalViews.toLocaleString()}</div>
-          </div>
-          <div className="card p-4">
-            <div className="text-sm text-muted-foreground mb-1">Unique Titles</div>
-            <div className="text-3xl font-bold text-foreground">{uniqueTitles.toLocaleString()}</div>
-          </div>
-          <div className="card p-4">
-            <div className="text-sm text-muted-foreground mb-1">Replay Rate</div>
-            <div className="text-3xl font-bold text-foreground">{replayRate.toFixed(1)}%</div>
-            <div className="text-xs text-muted-foreground mt-1">
-              {replayRate < 10 ? 'Preference for new content' : 'Mix of new and rewatched content'}
-            </div>
-          </div>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-sm text-muted-foreground mb-1">Total Items Watched</div>
+              <div className="text-3xl font-bold text-foreground">{totalViews.toLocaleString()}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-sm text-muted-foreground mb-1">Unique Titles</div>
+              <div className="text-3xl font-bold text-foreground">{uniqueTitles.toLocaleString()}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-4">
+              <div className="text-sm text-muted-foreground mb-1">Replay Rate</div>
+              <div className="text-3xl font-bold text-foreground">{replayRate.toFixed(1)}%</div>
+              <div className="text-xs text-muted-foreground mt-1">
+                {replayRate < 10 ? 'Preference for new content' : 'Mix of new and rewatched content'}
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Yearly Viewing */}
         <YearlyChart data={yearlyData} title="Yearly Viewing Activity" />
         
         {peakYears.length > 0 && (
-          <div className="card p-4 bg-primary/5 border border-primary/20">
-            <h3 className="font-semibold text-foreground mb-2">📈 Peak Activity Years</h3>
-            <p className="text-sm text-muted-foreground">
-              Your activity peaked in {peakYears.join(' and ')}, with consistent engagement across recent years.
-              {peakYears.includes('2025') && ' You became most active again in 2025, possibly due to new shows or increased free time.'}
-            </p>
-          </div>
+          <Card className="bg-primary/5 border border-primary/20">
+            <CardContent className="p-4">
+              <h3 className="font-semibold text-foreground mb-2">📈 Peak Activity Years</h3>
+              <p className="text-sm text-muted-foreground">
+                Your activity peaked in {peakYears.join(' and ')}, with consistent engagement across recent years.
+                {peakYears.includes('2025') && ' You became most active again in 2025, possibly due to new shows or increased free time.'}
+              </p>
+            </CardContent>
+          </Card>
         )}
 
         {/* Monthly Pattern */}
         <MonthlyPatternChart data={monthlyPatternData} title="Monthly Viewing Pattern" />
         
         {(mostActiveMonths.length > 0 || leastActiveMonths.length > 0) && (
-          <div className="card p-4 bg-primary/5 border border-primary/20">
-            <h3 className="font-semibold text-foreground mb-2">🗓️ Monthly Viewing Pattern</h3>
-            {mostActiveMonths.length > 0 && (
-              <div className="mb-2">
-                <p className="text-sm font-medium text-foreground mb-1">Most active months:</p>
-                <p className="text-sm text-muted-foreground">{mostActiveMonths.join(', ')}</p>
-              </div>
-            )}
-            {leastActiveMonths.length > 0 && (
-              <div>
-                <p className="text-sm font-medium text-foreground mb-1">Least active months:</p>
-                <p className="text-sm text-muted-foreground">{leastActiveMonths.join(' & ')}</p>
-              </div>
-            )}
-            <p className="text-xs text-muted-foreground mt-2">
-              💡 You tend to watch more during summer and post-monsoon months, suggesting you binge around mid-year — maybe during vacations or relaxed work cycles.
-            </p>
-          </div>
+          <Card className="bg-primary/5 border border-primary/20">
+            <CardContent className="p-4">
+              <h3 className="font-semibold text-foreground mb-2">🗓️ Monthly Viewing Pattern</h3>
+              {mostActiveMonths.length > 0 && (
+                <div className="mb-2">
+                  <p className="text-sm font-medium text-foreground mb-1">Most active months:</p>
+                  <p className="text-sm text-muted-foreground">{mostActiveMonths.join(', ')}</p>
+                </div>
+              )}
+              {leastActiveMonths.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium text-foreground mb-1">Least active months:</p>
+                  <p className="text-sm text-muted-foreground">{leastActiveMonths.join(' & ')}</p>
+                </div>
+              )}
+              <p className="text-xs text-muted-foreground mt-2">
+                💡 You tend to watch more during summer and post-monsoon months, suggesting you binge around mid-year — maybe during vacations or relaxed work cycles.
+              </p>
+            </CardContent>
+          </Card>
         )}
 
         {/* Day of Week */}
         <DayOfWeekChart data={dayOfWeekData} title="Viewing by Day of Week" />
         
-        <div className="card p-4 bg-primary/5 border border-primary/20">
-          <h3 className="font-semibold text-foreground mb-2">📅 Weekly Viewing Pattern</h3>
-          <p className="text-sm text-muted-foreground">
-            Your viewing peaks on weekends (Fri–Sun) — a clear leisure pattern — and tapers on Mondays, which aligns with a typical workweek rhythm.
-          </p>
-        </div>
+        <Card className="bg-primary/5 border border-primary/20">
+          <CardContent className="p-4">
+            <h3 className="font-semibold text-foreground mb-2">📅 Weekly Viewing Pattern</h3>
+            <p className="text-sm text-muted-foreground">
+              Your viewing peaks on weekends (Fri–Sun) — a clear leisure pattern — and tapers on Mondays, which aligns with a typical workweek rhythm.
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Top Shows/Franchises Table */}
         {topTitlesByMainTitle.length > 0 && (
-          <div className="card p-4">
-            <h2 className="text-lg font-semibold mb-4 text-foreground">Top Shows / Franchises</h2>
+          <Card>
+            <CardContent className="p-4">
+              <h2 className="text-lg font-semibold mb-4 text-foreground">Top Shows / Franchises</h2>
             <div className="overflow-x-auto -mx-4 px-4">
               <table className="w-full border-collapse min-w-full">
                 <thead>
@@ -135,7 +149,8 @@ export default function InsightsDialog({ isOpen, onClose, insights }) {
                 </tbody>
               </table>
             </div>
-          </div>
+            </CardContent>
+          </Card>
         )}
 
         {/* Top Titles by Main Title Chart */}
@@ -143,8 +158,9 @@ export default function InsightsDialog({ isOpen, onClose, insights }) {
         
         {/* Key Insights */}
         {topTitlesByMainTitle.length > 0 && (
-          <div className="card p-4 bg-primary/5 border border-primary/20">
-            <h3 className="font-semibold text-foreground mb-3">🎯 Key Insights</h3>
+          <Card className="bg-primary/5 border border-primary/20">
+            <CardContent className="p-4">
+              <h3 className="font-semibold text-foreground mb-3">🎯 Key Insights</h3>
             <div className="space-y-3 text-sm text-muted-foreground">
               {topTitlesByMainTitle.length >= 3 && (
                 <p>
@@ -173,18 +189,21 @@ export default function InsightsDialog({ isOpen, onClose, insights }) {
                 You also seem to favor character-driven narratives — most of these shows feature complex worlds and long-term arcs.
               </p>
             </div>
-          </div>
+            </CardContent>
+          </Card>
         )}
 
         {/* Unique Titles Insight */}
-        <div className="card p-4 bg-primary/5 border border-primary/20">
-          <h3 className="font-semibold text-foreground mb-2">💡 Content Preference Insight</h3>
-          <p className="text-sm text-muted-foreground">
-            You've watched {uniqueTitles.toLocaleString()} unique shows/movies out of {totalViews.toLocaleString()} total views. 
-            This indicates that you've watched many unique shows/movies — with relatively few replays ({replayRate.toFixed(1)}% replay rate), 
-            suggesting a preference for new content.
-          </p>
-        </div>
+        <Card className="bg-primary/5 border border-primary/20">
+          <CardContent className="p-4">
+            <h3 className="font-semibold text-foreground mb-2">💡 Content Preference Insight</h3>
+            <p className="text-sm text-muted-foreground">
+              You've watched {uniqueTitles.toLocaleString()} unique shows/movies out of {totalViews.toLocaleString()} total views. 
+              This indicates that you've watched many unique shows/movies — with relatively few replays ({replayRate.toFixed(1)}% replay rate), 
+              suggesting a preference for new content.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </Dialog>
   )

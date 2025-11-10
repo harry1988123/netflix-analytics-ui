@@ -1,4 +1,6 @@
 import React from 'react'
+import { Button } from './ui/button.jsx'
+import { Card } from './ui/card.jsx'
 
 export default function ProfileSelector({ selectedProfiles, onProfilesChange }) {
   const profiles = [1, 2, 3, 4, 5]
@@ -21,42 +23,36 @@ export default function ProfileSelector({ selectedProfiles, onProfilesChange }) 
   const isAllSelected = selectedProfiles.length === 5
 
   return (
-    <div className="card p-3">
+    <Card className="p-3">
       <div className="flex items-center justify-between mb-3">
         <label className="text-sm font-medium text-foreground">Filter by Profile</label>
         {!isAllSelected && (
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="sm"
             onClick={selectAll}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className="text-xs h-auto py-1"
           >
             Select All
-          </button>
+          </Button>
         )}
       </div>
       <div className="flex flex-wrap gap-2">
         {profiles.map(profile => {
           const isSelected = selectedProfiles.includes(profile)
           return (
-            <button
+            <Button
               key={profile}
               type="button"
               onClick={() => toggleProfile(profile)}
               disabled={isSelected && selectedProfiles.length === 1}
-              className={`
-                px-4 py-2 rounded-full text-sm font-medium transition-all
-                ${isSelected
-                  ? 'bg-primary text-primary-foreground shadow-sm'
-                  : 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border'
-                }
-                ${isSelected && selectedProfiles.length === 1
-                  ? 'opacity-75 cursor-not-allowed'
-                  : 'cursor-pointer'
-                }
-              `}
+              variant={isSelected ? "default" : "outline"}
+              size="default"
+              className="rounded-full"
             >
               Profile {profile}
-            </button>
+            </Button>
           )
         })}
       </div>
@@ -66,7 +62,7 @@ export default function ProfileSelector({ selectedProfiles, onProfilesChange }) 
           : `Showing ${selectedProfiles.length} profile${selectedProfiles.length > 1 ? 's' : ''}: ${selectedProfiles.map(p => `Profile ${p}`).join(', ')}`
         }
       </p>
-    </div>
+    </Card>
   )
 }
 

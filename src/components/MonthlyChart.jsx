@@ -1,6 +1,7 @@
 import React from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
 import Shimmer from './Shimmer.jsx'
+import { Card, CardContent } from './ui/card.jsx'
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
@@ -23,15 +24,18 @@ const CustomTooltip = ({ active, payload }) => {
 export default function MonthlyChart({ data, title = 'Viewing by Month', isLoading = false }) {
   if (isLoading) {
     return (
-      <div className="card p-4">
-        <Shimmer height="h-80" />
-      </div>
+      <Card>
+        <CardContent className="p-4">
+          <Shimmer height="h-80" />
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <div className="card p-4">
-      <h2 className="text-lg font-semibold mb-4">{title}</h2>
+    <Card>
+      <CardContent className="p-4">
+        <h2 className="text-lg font-semibold mb-4">{title}</h2>
       {data.length === 0 ? (
         <div className="h-64 flex items-center justify-center text-slate-500">
           No data to display
@@ -59,7 +63,8 @@ export default function MonthlyChart({ data, title = 'Viewing by Month', isLoadi
           </ResponsiveContainer>
         </div>
       )}
-    </div>
+      </CardContent>
+    </Card>
   )
 }
 

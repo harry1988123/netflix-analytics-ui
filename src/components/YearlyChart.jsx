@@ -1,6 +1,7 @@
 import React from 'react'
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import Shimmer from './Shimmer.jsx'
+import { Card, CardContent } from './ui/card.jsx'
 
 const COLORS = ['#6366F1', '#06B6D4', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899']
 
@@ -23,40 +24,44 @@ const CustomTooltip = ({ active, payload }) => {
 export default function YearlyChart({ data, title = 'Yearly Viewing', isLoading = false }) {
   if (isLoading) {
     return (
-      <div className="card p-4">
-        <Shimmer height="h-80" />
-      </div>
+      <Card>
+        <CardContent className="p-4">
+          <Shimmer height="h-80" />
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <div className="card p-4">
-      <h2 className="text-lg font-semibold mb-4">{title}</h2>
-      {data.length === 0 ? (
-        <div className="h-64 flex items-center justify-center text-slate-500">
-          No data to display
-        </div>
-      ) : (
-        <div className="h-80">
-          <ResponsiveContainer width="100%" height="100%">
-            <RechartsBarChart
-              data={data}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="year" stroke="#64748b" fontSize={12} />
-              <YAxis stroke="#64748b" fontSize={12} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Bar>
-            </RechartsBarChart>
-          </ResponsiveContainer>
-        </div>
-      )}
-    </div>
+    <Card>
+      <CardContent className="p-4">
+        <h2 className="text-lg font-semibold mb-4">{title}</h2>
+        {data.length === 0 ? (
+          <div className="h-64 flex items-center justify-center text-slate-500">
+            No data to display
+          </div>
+        ) : (
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <RechartsBarChart
+                data={data}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="year" stroke="#64748b" fontSize={12} />
+                <YAxis stroke="#64748b" fontSize={12} />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Bar>
+              </RechartsBarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
 

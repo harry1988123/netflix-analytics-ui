@@ -1,5 +1,6 @@
 import React from 'react'
 import { format, subMonths, subYears, startOfDay, max as maxDate } from 'date-fns'
+import { Button } from './ui/button.jsx'
 
 // Minimum date allowed: 2019-11-16
 const MIN_DATE = new Date(2019, 10, 16)
@@ -64,17 +65,16 @@ export default function QuickFilters({ onStartDateChange, onEndDateChange, start
       {quickFilters.map((filter) => {
         const active = isActive(filter)
         return (
-          <button
+          <Button
             key={filter.label}
             type="button"
             onClick={() => handleQuickFilter(filter)}
-            className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${active
-              ? 'bg-primary text-primary-foreground hover:bg-primary/90'
-              : 'bg-secondary text-secondary-foreground hover:bg-secondary/80 border border-border'
-              }`}
+            variant={active ? "default" : "outline"}
+            size="sm"
+            className="rounded-full"
           >
             {filter.label}
-          </button>
+          </Button>
         )
       })}
     </div>

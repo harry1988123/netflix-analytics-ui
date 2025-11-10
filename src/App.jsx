@@ -12,6 +12,7 @@ import MonthlyChart from './components/MonthlyChart.jsx'
 import ComposedChart from './components/ComposedChart.jsx'
 import ThemeToggle from './components/ThemeToggle.jsx'
 import InsightsDialog from './components/InsightsDialog.jsx'
+import { Button } from './components/ui/button.jsx'
 import { usePersistentState } from './hooks/usePersistentState.js'
 import { useTheme } from './hooks/useTheme.js'
 import { parseUSDate, formatYMD } from './lib/date.js'
@@ -23,9 +24,9 @@ import { parseUSDate, formatYMD } from './lib/date.js'
 //           "The Big Bang Theory: Season 6: The 43 Peculiarity" -> "The Big Bang Theory"
 function extractMainTitle(fullTitle) {
   if (!fullTitle) return fullTitle
-  
+
   let mainTitle = fullTitle.trim()
-  
+
   // Handle specific patterns first
   // Pattern: "Title: Episodes (range): date description" -> "Title: Episodes"
   if (/: Episodes?\s*\(/.test(mainTitle)) {
@@ -34,7 +35,7 @@ function extractMainTitle(fullTitle) {
       return match[1].trim()
     }
   }
-  
+
   // Handle "Title: Season X: Episode Name" or "Title: Season X: Description"
   // Extract just the main title before "Season"
   if (/: Season\s+\d+/i.test(mainTitle)) {
@@ -43,7 +44,7 @@ function extractMainTitle(fullTitle) {
       return match[1].trim()
     }
   }
-  
+
   // Handle "Title: Subtitle: Subtitle: Episode Name" patterns
   // For shows like "Crime Patrol: City Crimes: City Crimes: Dhoka"
   // Try to extract the first two parts if they repeat
@@ -65,7 +66,7 @@ function extractMainTitle(fullTitle) {
       }
     }
   }
-  
+
   // Common patterns to remove (more specific first)
   const patterns = [
     /:\s*Season\s+\d+\s*:.*/i,                    // "Title: Season X: ..."
@@ -78,7 +79,7 @@ function extractMainTitle(fullTitle) {
     /:\s*Part\s+\d+.*/i,                          // "Title: Part X"
     /:\s*Chapter\s+\d+.*/i,                       // "Title: Chapter X"
   ]
-  
+
   // Apply patterns
   for (const pattern of patterns) {
     const before = mainTitle
@@ -89,15 +90,15 @@ function extractMainTitle(fullTitle) {
     }
     mainTitle = before
   }
-  
+
   // Remove trailing colons and whitespace
   mainTitle = mainTitle.replace(/:\s*$/, '').trim()
-  
+
   // If we ended up with empty or very short title, return original
   if (!mainTitle || mainTitle.length < 3) {
     return fullTitle
   }
-  
+
   return mainTitle
 }
 
@@ -127,7 +128,7 @@ export default function App() {
   // Profile selection - default to all profiles [1,2,3,4,5]
   // usePersistentState handles arrays via JSON, which works fine
   const [selectedProfilesRaw, setSelectedProfilesRaw] = usePersistentState('selectedProfiles', [1, 2, 3, 4, 5])
-  
+
   // Ensure selectedProfiles is always a valid array with at least one profile
   const selectedProfiles = useMemo(() => {
     if (!Array.isArray(selectedProfilesRaw) || selectedProfilesRaw.length === 0) {
@@ -137,14 +138,14 @@ export default function App() {
     const valid = selectedProfilesRaw.filter(p => Number.isInteger(p) && p >= 1 && p <= 5)
     return valid.length > 0 ? valid : [1, 2, 3, 4, 5]
   }, [selectedProfilesRaw])
-  
+
   const setSelectedProfiles = (profiles) => {
     // Ensure at least one profile is selected
     if (Array.isArray(profiles) && profiles.length > 0) {
       setSelectedProfilesRaw(profiles)
     }
   }
-  
+
   const [getQuery, setQuery] = useQueryParams()
 
   // load CSV files from all profiles
@@ -164,10 +165,10 @@ export default function App() {
               .filter(r => r.Title && r.Date)
               .map(r => {
                 const dt = parseUSDate(r.Date)
-                return { 
-                  Title: r.Title, 
+                return {
+                  Title: r.Title,
                   Date: formatYMD(dt),
-                  Profile: profileNumber 
+                  Profile: profileNumber
                 }
               })
             resolve(rows)
@@ -205,10 +206,10 @@ export default function App() {
       }
     } else {
       // seed URL from localStorage
-      setQuery({ 
-        search, 
-        activeTitle: activeTitle ?? '', 
-        startDate, 
+      setQuery({
+        search,
+        activeTitle: activeTitle ?? '',
+        startDate,
         endDate,
         profiles: selectedProfiles.join(',')
       })
@@ -218,10 +219,10 @@ export default function App() {
 
   // Anytime filters change, mirror to URL
   useEffect(() => {
-    setQuery({ 
-      search, 
-      activeTitle: activeTitle ?? '', 
-      startDate, 
+    setQuery({
+      search,
+      activeTitle: activeTitle ?? '',
+      startDate,
       endDate,
       profiles: selectedProfiles.join(',')
     })
@@ -368,21 +369,21 @@ export default function App() {
     const peakThreshold = maxYearCount * 0.9
     const peakYears = yearlyData.length > 0
       ? yearlyData
-          .filter(d => d.count >= peakThreshold)
-          .map(d => d.year)
+        .filter(d => d.count >= peakThreshold)
+        .map(d => d.year)
       : []
 
     // Monthly pattern data (aggregate across all years)
     const monthlyCounts = new Map()
-    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 
-                    'July', 'August', 'September', 'October', 'November', 'December']
-    
+    const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December']
+
     filtered.forEach(row => {
       const date = new Date(row.Date)
       const monthIndex = date.getMonth()
       monthlyCounts.set(monthIndex, (monthlyCounts.get(monthIndex) || 0) + 1)
     })
-    
+
     const monthlyPatternData = Array.from(monthlyCounts.entries())
       .map(([monthIndex, count]) => ({
         month: MONTHS[monthIndex].substring(0, 3),
@@ -460,9 +461,9 @@ export default function App() {
             <h1 className="text-2xl font-bold">Netflix Viewing Explorer</h1>
             <p className="text-muted-foreground text-sm">Filters persist across refresh. Select profiles (1-5), click a donut slice or use search to filter the table.</p>
           </div>
-          <button
+          <Button
             onClick={() => setIsInsightsOpen(true)}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium flex items-center gap-2"
+            className="flex items-center gap-2"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -479,11 +480,11 @@ export default function App() {
               <path d="m19 9-5 5-4-4-3 3"></path>
             </svg>
             View Insights
-          </button>
+          </Button>
         </header>
 
         <SearchBar value={search} onChange={setSearch} />
-        <ProfileSelector 
+        <ProfileSelector
           selectedProfiles={selectedProfiles}
           onProfilesChange={setSelectedProfiles}
         />

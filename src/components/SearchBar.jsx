@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { Input } from './ui/input.jsx'
+import { Card } from './ui/card.jsx'
 
 export default function SearchBar({ value, onChange }) {
   const [inputValue, setInputValue] = useState(value)
@@ -43,14 +45,14 @@ export default function SearchBar({ value, onChange }) {
   }, [inputValue])
 
   return (
-    <div className="card p-3 flex items-center gap-2">
-      <input
+    <Card className="p-3 flex items-center gap-2">
+      <Input
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         type="text"
         placeholder="Search title..."
-        className="w-full rounded-xl border border-input bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-ring"
+        className="w-full"
       />
-    </div>
+    </Card>
   )
 }

@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import { TableShimmer } from './Shimmer.jsx'
+import { Card } from './ui/card.jsx'
 
 const ROW_HEIGHT = 40 // Height of each row in pixels
 const CONTAINER_HEIGHT = 600 // Total height of the virtualized container
@@ -20,14 +21,14 @@ export default function Table({ rows = [], isLoading = false }) {
 
   if (isLoading) {
     return (
-      <div className="card p-0 overflow-hidden">
+      <Card className="p-0 overflow-hidden">
         <TableShimmer rows={15} />
-      </div>
+      </Card>
     )
   }
 
   return (
-    <div className="card p-0 overflow-hidden">
+    <Card className="p-0 overflow-hidden">
       {/* Table Header */}
       <div className="bg-muted border-b border-border sticky top-0 z-10">
         <div className="flex">
@@ -89,6 +90,6 @@ export default function Table({ rows = [], isLoading = false }) {
           </div>
         )}
       </div>
-    </div>
+    </Card>
   )
 }
