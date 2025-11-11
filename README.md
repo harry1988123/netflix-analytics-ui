@@ -39,6 +39,7 @@ A comprehensive, interactive analytics dashboard for exploring Netflix viewing h
 ### Core Functionality
 - **Interactive Search**: Real-time search filtering with debounced input (300ms delay)
 - **Date Range Filters**: Custom date picker with quick filter presets (Last 3 Months, Last 6 Months, Last 1 Year)
+- **Profile Selector**: Toggle between individual profiles (1-5) or view combined activity
 - **Donut Chart Interaction**: Click on chart slices to filter the table by specific titles
 - **Multiple Visualizations**:
   - Timeline chart showing viewing activity over time
@@ -54,6 +55,7 @@ A comprehensive, interactive analytics dashboard for exploring Netflix viewing h
 - **State Persistence**: Filters persist across page refreshes via localStorage
 - **URL Sharing**: All filter states are mirrored to URL parameters for easy sharing
 - **Responsive Design**: Fully responsive layout that works on all screen sizes
+- **Insights Dialog**: One-click modal summarizing yearly, monthly, weekly, and franchise insights
 
 ## 🛠️ Tech Stack
 
@@ -68,7 +70,7 @@ A comprehensive, interactive analytics dashboard for exploring Netflix viewing h
 - **date-fns**: Modern date utility library for date manipulation
 
 ### UI Components & Styling
-- **shadcn/ui**: High-quality component library (table components)
+- **shadcn/ui**: High-quality component library (buttons, inputs, cards, dialog, table primitives)
 - **TanStack Virtual**: Efficient virtualization for large lists
 - **react-day-picker**: Accessible date picker component
 - **class-variance-authority**: For component variants
@@ -165,6 +167,12 @@ The project is configured for easy deployment on Netlify:
 - **Monthly Chart**: Line chart showing trends over months
 - **Composed Chart**: Combined bar and line chart with average calculation
 - **Donut Chart**: Interactive pie chart showing top 20 titles with "Others" bucket
+
+### Insights Dialog
+
+- Launch directly from the header to open a comprehensive modal
+- Summaries include yearly totals, monthly seasonality, day-of-week trends, and top franchises
+- Narrative insights call out binge patterns, genre balance, and new-vs-rewatch behavior, all rendered with shadcn/ui components
 
 ### State Persistence
 
