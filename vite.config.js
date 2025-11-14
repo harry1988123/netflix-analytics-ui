@@ -14,5 +14,7 @@ export default defineConfig({
         manualChunks: undefined
       }
     }
-  }
+  },
+  // Expose environment variables to the client
+  envPrefix: 'VITE_'
 })

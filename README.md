@@ -73,8 +73,14 @@ A comprehensive, interactive analytics dashboard for exploring Netflix viewing h
 - **shadcn/ui**: High-quality component library (buttons, inputs, cards, dialog, table primitives)
 - **TanStack Virtual**: Efficient virtualization for large lists
 - **react-day-picker**: Accessible date picker component
+- **react-markdown**: Markdown rendering for AI insights
 - **class-variance-authority**: For component variants
 - **clsx & tailwind-merge**: Utility functions for className management
+
+### AI Integration
+- **Google Gemini API**: AI-powered viewing insights using `@google/generative-ai` SDK (gemini-2.5-flash-lite model)
+- **react-markdown**: Markdown rendering for AI-generated insights
+- **Note**: ChatGPT integration is temporarily disabled
 
 ### Development Tools
 - **ESLint**: Code linting with standard configuration
@@ -98,17 +104,29 @@ A comprehensive, interactive analytics dashboard for exploring Netflix viewing h
    npm install
    ```
 
-3. **Add your data file**:
-   - Place your `NetflixViewingHistory.csv` file in `public/data/`
+3. **Add your data files**:
+   - Place your CSV files in `public/data/`:
+     - `NetflixViewingHistory_1.csv` through `NetflixViewingHistory_5.csv` for individual profiles
+     - `NetflixViewingHistory.csv` (optional, for merged data)
    - The CSV should have columns: `Title` and `Date`
    - Date format: `M/D/YY` or `MM/DD/YY` (US-style dates)
 
-4. **Start the development server**:
+4. **Configure API Keys (Optional - for AI Insights)**:
+   - Copy `.env.example` to `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+   - Add your API key to `.env`:
+     - `VITE_GEMINI_API_KEY`: Your Google Gemini API key for AI insights
+     - **Note**: ChatGPT integration is temporarily disabled. Only Gemini is currently available.
+   - **Note**: AI insights are optional. The dashboard works without API keys, but AI-powered insights won't be available.
+
+5. **Start the development server**:
    ```bash
    npm run dev
    ```
 
-5. **Open your browser**:
+6. **Open your browser**:
    - Navigate to the URL shown in the terminal (usually `http://localhost:5173`)
 
 ## 🚀 Deployment
@@ -137,8 +155,10 @@ The project is configured for easy deployment on Netlify:
    - **Node version**: 18 (or use `.nvmrc` file)
 
 4. **Environment Variables**:
-   - No environment variables required for basic deployment
-   - All data is loaded from `public/data/NetflixViewingHistory.csv`
+   - For basic deployment: No environment variables required
+   - For AI insights: Add `VITE_GEMINI_API_KEY` in Netlify's environment variables settings
+   - **Note**: ChatGPT integration is temporarily disabled
+   - Data files should be in `public/data/` directory (NetflixViewingHistory_1.csv through NetflixViewingHistory_5.csv)
 
 5. **Troubleshooting Netlify Builds**:
    - Ensure `package.json` has the `build` script
@@ -171,8 +191,14 @@ The project is configured for easy deployment on Netlify:
 ### Insights Dialog
 
 - Launch directly from the header to open a comprehensive modal
-- Summaries include yearly totals, monthly seasonality, day-of-week trends, and top franchises
-- Narrative insights call out binge patterns, genre balance, and new-vs-rewatch behavior, all rendered with shadcn/ui components
+- **AI-Powered Insights**: Generate personalized analysis using Google Gemini (ChatGPT temporarily disabled)
+- Displays comprehensive charts and visualizations:
+  - Yearly viewing activity chart
+  - Monthly viewing patterns
+  - Day-of-week viewing patterns
+  - Top shows/franchises table and bar chart
+- AI-generated insights are rendered as markdown with proper formatting
+- All rendered with shadcn/ui components and react-markdown
 
 ### State Persistence
 
@@ -187,33 +213,50 @@ All filter states are automatically saved:
 netflix-analytics-ui/
 ├── public/
 │   └── data/
-│       └── NetflixViewingHistory.csv    # Your viewing history data
+│       ├── NetflixViewingHistory_1.csv  # Profile 1 viewing history
+│       ├── NetflixViewingHistory_2.csv  # Profile 2 viewing history
+│       ├── NetflixViewingHistory_3.csv  # Profile 3 viewing history
+│       ├── NetflixViewingHistory_4.csv  # Profile 4 viewing history
+│       ├── NetflixViewingHistory_5.csv  # Profile 5 viewing history
+│       └── NetflixViewingHistory.csv    # Optional: merged data
 ├── src/
 │   ├── components/
 │   │   ├── ui/                          # shadcn/ui components
+│   │   │   ├── button.jsx               # Button component
+│   │   │   ├── card.jsx                 # Card component
+│   │   │   ├── dialog.jsx               # Dialog/Modal component
+│   │   │   ├── input.jsx                # Input component
 │   │   │   └── table.jsx                # Table component primitives
 │   │   ├── BarChart.jsx                 # Horizontal bar chart
 │   │   ├── ComposedChart.jsx            # Bar + line chart
 │   │   ├── DatePicker.jsx               # Date selection component
 │   │   ├── DayOfWeekChart.jsx           # Day-of-week analysis
+│   │   ├── Dialog.jsx                   # Dialog wrapper component
 │   │   ├── Donut.jsx                    # Interactive donut chart
 │   │   ├── Filters.jsx                  # Filter container
+│   │   ├── InsightsDialog.jsx           # AI-powered insights dialog
 │   │   ├── MonthlyChart.jsx             # Monthly trends
+│   │   ├── MonthlyPatternChart.jsx      # Monthly pattern analysis
+│   │   ├── ProfileSelector.jsx          # Profile filter component
 │   │   ├── QuickFilters.jsx             # Quick date range buttons
 │   │   ├── SearchBar.jsx                # Search input with debouncing
 │   │   ├── Shimmer.jsx                  # Loading skeleton components
 │   │   ├── Table.jsx                    # Virtualized data table
 │   │   ├── ThemeToggle.jsx              # Dark/light theme switcher
-│   │   └── Timeline.jsx                 # Time series chart
+│   │   ├── Timeline.jsx                 # Time series chart
+│   │   └── YearlyChart.jsx              # Yearly viewing chart
 │   ├── hooks/
 │   │   ├── usePersistentState.js        # localStorage + URL sync hook
 │   │   └── useTheme.js                  # Theme management hook
 │   ├── lib/
+│   │   ├── aiService.js                 # Gemini API integration (using @google/generative-ai SDK)
 │   │   ├── date.js                      # Date parsing utilities
 │   │   └── utils.js                     # Utility functions (cn helper)
 │   ├── App.jsx                          # Main application component
 │   ├── main.jsx                         # Application entry point
 │   └── styles.css                       # Global styles + theme variables
+├── .env.example                         # Environment variables template
+├── .gitignore                           # Git ignore file
 ├── index.html                           # HTML template
 ├── package.json                         # Dependencies and scripts
 ├── tailwind.config.js                   # Tailwind configuration
@@ -307,9 +350,13 @@ npm run lint
 ## 📊 Data Format
 
 ### CSV Structure
-Your `NetflixViewingHistory.csv` should have:
+Your CSV files should have:
 - **Title**: Name of the show/movie
 - **Date**: Viewing date in US format (`M/D/YY` or `MM/DD/YY`)
+
+**File naming**:
+- `NetflixViewingHistory_1.csv` through `NetflixViewingHistory_5.csv` for individual profiles
+- The application automatically loads all profile files and adds a `Profile` column
 
 Example:
 ```csv
