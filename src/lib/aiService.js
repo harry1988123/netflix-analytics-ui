@@ -54,9 +54,9 @@ export async function getChatGPTInsights(insightsData) {
 }
 
 /**
- * Generate insights using Google Gemini API
+ * Generate insights using Google Gemini API with streaming support
  */
-export async function getGeminiInsights(insightsData) {
+export async function getGeminiInsights(insightsData, onChunk) {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY
 
   if (!apiKey) {
@@ -75,31 +75,45 @@ export async function getGeminiInsights(insightsData) {
       model: 'gemini-2.5-flash-lite',
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 5000
+        maxOutputTokens: 2500
       }
     })
 
     // Create the full prompt with system instructions
     const fullPrompt = `You are an expert data analyst specializing in entertainment viewing patterns. Provide insightful, engaging, and personalized analysis of Netflix viewing data.\n\n${prompt}`
 
-    // Generate content
-    const result = await model.generateContent(fullPrompt)
-    const response = result.response
+    // If onChunk callback is provided, use streaming
+    if (onChunk) {
+      let fullText = ''
+      const result = await model.generateContentStream(fullPrompt)
 
-    // Extract text from response - handle both SDK response and raw JSON structure
-    let text = ''
-    try {
-      text = response.text()
-    } catch (error) {
-      // Fallback: if response.text() fails, try to extract from raw structure
-      if (result.response && result.response.candidates && result.response.candidates[0]) {
-        text = result.response.candidates[0].content?.parts?.[0]?.text || ''
-      } else if (response.candidates && response.candidates[0]) {
-        text = response.candidates[0].content?.parts?.[0]?.text || ''
+      for await (const chunk of result.stream) {
+        const chunkText = chunk.text()
+        fullText += chunkText
+        onChunk(chunkText)
       }
-    }
 
-    return text || 'No insights generated.'
+      return fullText || 'No insights generated.'
+    } else {
+      // Fallback to non-streaming for backward compatibility
+      const result = await model.generateContent(fullPrompt)
+      const response = result.response
+
+      // Extract text from response
+      let text = ''
+      try {
+        text = response.text()
+      } catch (error) {
+        // Fallback: if response.text() fails, try to extract from raw structure
+        if (result.response && result.response.candidates && result.response.candidates[0]) {
+          text = result.response.candidates[0].content?.parts?.[0]?.text || ''
+        } else if (response.candidates && response.candidates[0]) {
+          text = response.candidates[0].content?.parts?.[0]?.text || ''
+        }
+      }
+
+      return text || 'No insights generated.'
+    }
   } catch (error) {
     console.error('Gemini API Error:', error)
     throw new Error(error.message || 'Failed to generate insights from Gemini API')

@@ -56,6 +56,7 @@ A comprehensive, interactive analytics dashboard for exploring Netflix viewing h
 - **URL Sharing**: All filter states are mirrored to URL parameters for easy sharing
 - **Responsive Design**: Fully responsive layout that works on all screen sizes
 - **Insights Dialog**: One-click modal summarizing yearly, monthly, weekly, and franchise insights
+- **Real-time AI Streaming**: AI-generated insights stream in real-time for immediate feedback and better user experience
 
 ## 🛠️ Tech Stack
 
@@ -79,7 +80,8 @@ A comprehensive, interactive analytics dashboard for exploring Netflix viewing h
 
 ### AI Integration
 - **Google Gemini API**: AI-powered viewing insights using `@google/generative-ai` SDK (gemini-2.5-flash-lite model)
-- **react-markdown**: Markdown rendering for AI-generated insights
+- **Real-time Streaming**: AI insights stream in real-time as they're generated, providing immediate feedback
+- **react-markdown**: Markdown rendering for AI-generated insights with proper formatting
 - **Note**: ChatGPT integration is temporarily disabled
 
 ### Development Tools
@@ -192,6 +194,7 @@ The project is configured for easy deployment on Netlify:
 
 - Launch directly from the header to open a comprehensive modal
 - **AI-Powered Insights**: Generate personalized analysis using Google Gemini (ChatGPT temporarily disabled)
+- **Real-time Streaming**: AI insights stream in real-time as they're generated, with a visual cursor indicator showing active streaming
 - Displays comprehensive charts and visualizations:
   - Yearly viewing activity chart
   - Monthly viewing patterns

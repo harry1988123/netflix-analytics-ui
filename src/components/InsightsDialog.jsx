@@ -42,13 +42,20 @@ export default function InsightsDialog({ isOpen, onClose, insights }) {
 
     setIsLoadingAI(true)
     setAiError(null)
+    setAiInsights('') // Clear previous response
 
     try {
-      const result = aiProvider === 'chatgpt'
-        ? await getChatGPTInsights(insights)
-        : await getGeminiInsights(insights)
-
-      setAiInsights(result)
+      if (aiProvider === 'gemini') {
+        // Use streaming for Gemini
+        await getGeminiInsights(insights, (chunk) => {
+          // Update state with each chunk using functional update
+          setAiInsights((prevResponse) => prevResponse + chunk)
+        })
+      } else {
+        // Non-streaming for ChatGPT (when re-enabled)
+        const result = await getChatGPTInsights(insights)
+        setAiInsights(result)
+      }
     } catch (error) {
       setAiError(error.message)
       console.error('AI Insights Error:', error)
@@ -116,7 +123,7 @@ export default function InsightsDialog({ isOpen, onClose, insights }) {
               </Card>
             )}
 
-            {aiInsights && !isLoadingAI && (
+            {aiInsights && (
               <Card className="bg-primary/5 border border-primary/20">
                 <CardContent className="p-4">
                   <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:text-foreground prose-p:text-muted-foreground prose-strong:text-foreground prose-strong:font-semibold prose-ul:text-muted-foreground prose-li:text-muted-foreground">
@@ -137,6 +144,9 @@ export default function InsightsDialog({ isOpen, onClose, insights }) {
                     >
                       {aiInsights}
                     </ReactMarkdown>
+                    {isLoadingAI && (
+                      <span className="inline-block w-2 h-4 bg-primary ml-1 animate-pulse">|</span>
+                    )}
                   </div>
                 </CardContent>
               </Card>
