@@ -6,11 +6,27 @@ import dotenv from 'dotenv'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+// Get directory path - Netlify Functions may already provide __dirname
+// Use a different variable name to avoid conflicts
+let currentDir
+if (typeof __dirname !== 'undefined') {
+    // Use provided __dirname if available
+    currentDir = __dirname
+} else {
+    // Otherwise, construct it from import.meta.url
+    const currentFile = fileURLToPath(import.meta.url)
+    currentDir = dirname(currentFile)
+}
 
 // Load environment variables
-dotenv.config({ path: join(__dirname, '../../.env') })
+// In Netlify, environment variables are available via process.env
+// We still load .env for local development
+try {
+    dotenv.config({ path: join(currentDir, '../../.env') })
+} catch (e) {
+    // If .env file doesn't exist, that's okay - use environment variables from Netlify
+    console.log('No .env file found, using environment variables from Netlify')
+}
 
 const app = express()
 
