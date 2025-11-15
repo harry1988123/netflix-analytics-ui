@@ -4,9 +4,22 @@ import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 
 // Load environment variables from root .env file
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-dotenv.config({ path: join(__dirname, '../../.env') })
+// In Netlify Functions, environment variables are provided directly via process.env
+// Only load .env file if we're not in a Netlify environment
+if (!process.env.NETLIFY && !process.env.AWS_LAMBDA_FUNCTION_NAME) {
+  let currentDir
+  if (typeof __dirname !== 'undefined') {
+    currentDir = __dirname
+  } else {
+    const currentFile = fileURLToPath(import.meta.url)
+    currentDir = dirname(currentFile)
+  }
+  try {
+    dotenv.config({ path: join(currentDir, '../../.env') })
+  } catch (e) {
+    // .env file not found, that's okay
+  }
+}
 
 const GEMINI_API_KEY = process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY
 const EMBEDDING_MODEL = 'models/text-embedding-004' // Gemini embedding model

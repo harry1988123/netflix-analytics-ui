@@ -6,8 +6,14 @@ import { readFileSync } from 'fs'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+// Avoid redeclaring __dirname if it's already provided (e.g., in Netlify Functions)
+let currentDir
+if (typeof __dirname !== 'undefined') {
+  currentDir = __dirname
+} else {
+  const currentFile = fileURLToPath(import.meta.url)
+  currentDir = dirname(currentFile)
+}
 
 export const indexRouter = express.Router()
 
@@ -111,7 +117,7 @@ indexRouter.post('/', async (req, res, next) => {
 
     // Load CSV files
     const profileFiles = [1, 2, 3, 4, 5].map(num => 
-      join(__dirname, '../../public/data', `NetflixViewingHistory_${num}.csv`)
+      join(currentDir, '../../public/data', `NetflixViewingHistory_${num}.csv`)
     )
 
     const allRows = []
