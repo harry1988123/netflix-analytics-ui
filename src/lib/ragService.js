@@ -2,7 +2,9 @@
  * Frontend API client for RAG-based smart search
  */
 
-const API_BASE_URL = import.meta.env.VITE_RAG_API_URL || 'http://localhost:3001/api'
+// In production (Netlify), use relative URLs. In development, use the backend server URL
+const API_BASE_URL = import.meta.env.VITE_RAG_API_URL || 
+  (import.meta.env.PROD ? '/api' : 'http://localhost:3001/api')
 
 /**
  * Perform a smart search query
