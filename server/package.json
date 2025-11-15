@@ -1,0 +1,21 @@
+{
+    "name": "netflix-analytics-backend",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "Backend API for RAG-based smart search",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "node --watch index.js",
+        "index": "node scripts/indexData.js"
+    },
+    "dependencies": {
+        "@chroma-core/default-embed": "^0.1.9",
+        "@google/generative-ai": "^0.24.1",
+        "chromadb": "^1.10.5",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "papaparse": "^5.4.1"
+    }
+}

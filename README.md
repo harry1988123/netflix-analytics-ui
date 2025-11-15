@@ -57,6 +57,7 @@ A comprehensive, interactive analytics dashboard for exploring Netflix viewing h
 - **Responsive Design**: Fully responsive layout that works on all screen sizes
 - **Insights Dialog**: One-click modal summarizing yearly, monthly, weekly, and franchise insights
 - **Real-time AI Streaming**: AI-generated insights stream in real-time for immediate feedback and better user experience
+- **RAG Smart Search**: AI-powered natural language search using ChromaDB Cloud and Google Gemini embeddings
 
 ## 🛠️ Tech Stack
 
@@ -82,6 +83,10 @@ A comprehensive, interactive analytics dashboard for exploring Netflix viewing h
 - **Google Gemini API**: AI-powered viewing insights using `@google/generative-ai` SDK (gemini-2.5-flash-lite model)
 - **Real-time Streaming**: AI insights stream in real-time as they're generated, providing immediate feedback
 - **react-markdown**: Markdown rendering for AI-generated insights with proper formatting
+- **RAG System**: Retrieval-Augmented Generation for smart search using:
+  - **ChromaDB Cloud**: Vector database for storing embeddings
+  - **Google Gemini Embeddings**: For generating vector embeddings from viewing history
+  - **Semantic Search**: Natural language queries with context-aware responses
 - **Note**: ChatGPT integration is temporarily disabled
 
 ### Development Tools
@@ -113,22 +118,57 @@ A comprehensive, interactive analytics dashboard for exploring Netflix viewing h
    - The CSV should have columns: `Title` and `Date`
    - Date format: `M/D/YY` or `MM/DD/YY` (US-style dates)
 
-4. **Configure API Keys (Optional - for AI Insights)**:
+4. **Configure API Keys (Optional - for AI Insights and RAG Smart Search)**:
    - Copy `.env.example` to `.env`:
      ```bash
      cp .env.example .env
      ```
-   - Add your API key to `.env`:
-     - `VITE_GEMINI_API_KEY`: Your Google Gemini API key for AI insights
+   - Add your API keys to `.env`:
+     - `VITE_GEMINI_API_KEY`: Your Google Gemini API key for AI insights and embeddings
+     - `CHROMA_API_KEY`: Your ChromaDB Cloud API key (required for RAG smart search)
+     - `CHROMA_TENANT`: Your ChromaDB Cloud tenant ID
+     - `CHROMA_DATABASE`: Your ChromaDB Cloud database name
+     - `VITE_RAG_API_URL`: Backend API URL (default: `http://localhost:3001/api`)
      - **Note**: ChatGPT integration is temporarily disabled. Only Gemini is currently available.
-   - **Note**: AI insights are optional. The dashboard works without API keys, but AI-powered insights won't be available.
+   - **Note**: AI insights are optional. The dashboard works without API keys, but AI-powered insights and smart search won't be available.
 
-5. **Start the development server**:
+5. **Set up Backend Server (Required for RAG Smart Search)**:
+   - Navigate to the server directory:
+     ```bash
+     cd server
+     ```
+   - Install backend dependencies:
+     ```bash
+     npm install
+     ```
+   - Make sure your `.env` file in the root directory has ChromaDB credentials configured
+   - Start the backend server:
+     ```bash
+     npm start
+     # Or for development with auto-reload:
+     npm run dev
+     ```
+   - The backend will run on `http://localhost:3001` by default
+
+6. **Index Your Data (Required for RAG Smart Search)**:
+   - Once the backend is running, index your viewing history data:
+     ```bash
+     # From the root directory
+     curl -X POST http://localhost:3001/api/index -H "Content-Type: application/json" -d '{"clear": true}'
+     ```
+   - Or use the API directly from your frontend after starting the backend
+   - This will:
+     - Load all CSV files from `public/data/`
+     - Generate embeddings using Google Gemini
+     - Store vectors in ChromaDB Cloud
+     - This process may take a few minutes depending on data size
+
+7. **Start the frontend development server** (in a new terminal, from root directory):
    ```bash
    npm run dev
    ```
 
-6. **Open your browser**:
+8. **Open your browser**:
    - Navigate to the URL shown in the terminal (usually `http://localhost:5173`)
 
 ## 🚀 Deployment
@@ -203,6 +243,25 @@ The project is configured for easy deployment on Netlify:
 - AI-generated insights are rendered as markdown with proper formatting
 - All rendered with shadcn/ui components and react-markdown
 
+### RAG Smart Search
+
+- **Natural Language Queries**: Ask questions in plain English about your viewing history
+- **Toggle Smart Search**: Click the "Smart" button in the search bar to enable AI-powered search
+- **Example Queries**:
+  - "Tell me the Christmas trend, what are things watched?"
+  - "What shows did I watch in December?"
+  - "What are my most watched genres?"
+  - "Show me viewing patterns on weekends"
+- **Features**:
+  - Semantic search using vector embeddings
+  - Context-aware responses with source citations
+  - Displays relevant viewing entries based on query
+  - Markdown-formatted answers
+- **Requirements**: 
+  - Backend server must be running
+  - Data must be indexed in ChromaDB Cloud
+  - ChromaDB Cloud credentials must be configured
+
 ### State Persistence
 
 All filter states are automatically saved:
@@ -222,6 +281,19 @@ netflix-analytics-ui/
 │       ├── NetflixViewingHistory_4.csv  # Profile 4 viewing history
 │       ├── NetflixViewingHistory_5.csv  # Profile 5 viewing history
 │       └── NetflixViewingHistory.csv    # Optional: merged data
+├── server/                              # Backend API server
+│   ├── index.js                         # Express server entry point
+│   ├── package.json                     # Backend dependencies
+│   ├── routes/
+│   │   ├── embed.js                     # Embedding generation endpoints
+│   │   ├── index.js                     # Data indexing endpoints
+│   │   └── search.js                    # RAG search endpoints
+│   ├── services/
+│   │   ├── chromadbService.js           # ChromaDB Cloud integration
+│   │   ├── embeddingService.js          # Gemini embedding generation
+│   │   └── ragService.js                # RAG query processing
+│   └── scripts/
+│       └── indexData.js                 # Data indexing script
 ├── src/
 │   ├── components/
 │   │   ├── ui/                          # shadcn/ui components
@@ -242,7 +314,8 @@ netflix-analytics-ui/
 │   │   ├── MonthlyPatternChart.jsx      # Monthly pattern analysis
 │   │   ├── ProfileSelector.jsx          # Profile filter component
 │   │   ├── QuickFilters.jsx             # Quick date range buttons
-│   │   ├── SearchBar.jsx                # Search input with debouncing
+│   │   ├── SearchBar.jsx                # Search input with debouncing and smart search toggle
+│   │   ├── SmartSearch.jsx              # RAG smart search component
 │   │   ├── Shimmer.jsx                  # Loading skeleton components
 │   │   ├── Table.jsx                    # Virtualized data table
 │   │   ├── ThemeToggle.jsx              # Dark/light theme switcher
@@ -254,6 +327,7 @@ netflix-analytics-ui/
 │   ├── lib/
 │   │   ├── aiService.js                 # Gemini API integration (using @google/generative-ai SDK)
 │   │   ├── date.js                      # Date parsing utilities
+│   │   ├── ragService.js                # Frontend RAG API client
 │   │   └── utils.js                     # Utility functions (cn helper)
 │   ├── App.jsx                          # Main application component
 │   ├── main.jsx                         # Application entry point
@@ -450,6 +524,47 @@ User Action → Component State → usePersistentState → localStorage + URL
    - Check virtualization is working
    - Verify memoization is in place
 
+## 🔍 RAG Smart Search Architecture
+
+The RAG (Retrieval-Augmented Generation) system enables natural language queries over your viewing history:
+
+### How It Works
+
+1. **Data Indexing**:
+   - CSV data is transformed into structured documents with metadata (title, date, profile, main title)
+   - Each document is embedded using Google Gemini's embedding model
+   - Vectors are stored in ChromaDB Cloud with associated metadata
+
+2. **Query Processing**:
+   - User's natural language query is embedded using the same model
+   - Vector similarity search retrieves the most relevant viewing history entries
+   - Retrieved context is passed to Gemini for answer generation
+
+3. **Response Generation**:
+   - Gemini generates a contextual answer based on retrieved documents
+   - Sources are cited with titles, dates, and profiles
+   - Relevant viewing entries are displayed in a table
+
+### Backend API Endpoints
+
+- `GET /api/health` - Health check
+- `POST /api/embed` - Generate embedding for text
+- `POST /api/embed/batch` - Generate embeddings for multiple texts
+- `POST /api/index` - Index CSV data into ChromaDB
+- `GET /api/index/status` - Get indexing status
+- `POST /api/search` - Perform RAG query
+
+### Configuration
+
+Ensure your `.env` file contains:
+```env
+VITE_GEMINI_API_KEY=your_gemini_api_key
+CHROMA_API_KEY=your_chromadb_api_key
+CHROMA_TENANT=your_tenant_id
+CHROMA_DATABASE=your_database_name
+VITE_RAG_API_URL=http://localhost:3001/api
+```
+
 ## 📝 Future Enhancements
 
 Potential improvements:
@@ -463,6 +578,9 @@ Potential improvements:
 - [ ] Accessibility improvements (ARIA labels, keyboard navigation)
 - [ ] Unit and integration tests
 - [ ] TypeScript migration
+- [ ] Streaming responses for RAG queries
+- [ ] Query history and suggestions
+- [ ] Advanced metadata filtering in RAG search
 
 ## 🤝 Contributing
 

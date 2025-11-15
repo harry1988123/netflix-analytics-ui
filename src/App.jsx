@@ -116,6 +116,7 @@ export default function App() {
   const [raw, setRaw] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [isInsightsOpen, setIsInsightsOpen] = useState(false)
+  const [smartSearchMode, setSmartSearchMode] = useState(false)
 
   // Initialize theme
   useTheme()
@@ -483,7 +484,12 @@ export default function App() {
           </Button>
         </header>
 
-        <SearchBar value={search} onChange={setSearch} />
+            <SearchBar
+              value={search}
+              onChange={setSearch}
+              smartSearchMode={smartSearchMode}
+              onSmartSearchModeChange={setSmartSearchMode}
+            />
         <ProfileSelector
           selectedProfiles={selectedProfiles}
           onProfilesChange={setSelectedProfiles}

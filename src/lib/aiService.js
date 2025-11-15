@@ -75,7 +75,7 @@ export async function getGeminiInsights(insightsData, onChunk) {
       model: 'gemini-2.5-flash-lite',
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 2500
+        maxOutputTokens: 100
       }
     })
 
